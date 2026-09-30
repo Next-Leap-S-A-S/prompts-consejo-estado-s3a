@@ -7,11 +7,10 @@ despacho de la Sección Tercera, Subsección A del Consejo de Estado
 
 ## Qué contiene
 
-- **Biblioteca**: 36 prompts listos para usar, 9 por cada uno de los 4 frentes
+- **Biblioteca**: 52 prompts listos para usar, 13 por cada uno de los 4 frentes
   de trabajo: **Estudio del expediente**, **Jurisprudencia y precedente**,
-  **Proyectos de providencia** y **Gestión del despacho**. Cada prompt está
-  asignado a un cargo (magistrado, magistrado auxiliar, oficial mayor,
-  oficial, relator, coordinador) y se puede filtrar por frente y por cargo.
+  **Proyectos de providencia** y **Gestión del despacho**. Cada prompt es una
+  tarea concreta y se filtra por frente o por búsqueda.
   Los campos entre corchetes son editables en la propia página; al copiar se
   copia el texto ya editado. Cada prompt trae el "antes" (la versión vaga),
   por qué falla y un tip.
@@ -35,10 +34,10 @@ El `index.html` se genera desde `src/`:
 ```
 src/
   template.html              marcado, estilos y logica (UTF-8, legible)
-  prompts-expediente.js      9 prompts de estudio del expediente
-  prompts-jurisprudencia.js  9 prompts de jurisprudencia y precedente
-  prompts-providencia.js     9 prompts de proyectos de providencia
-  prompts-despacho.js        9 prompts de gestion del despacho
+  prompts-expediente.js      13 prompts de estudio del expediente
+  prompts-jurisprudencia.js  13 prompts de jurisprudencia y precedente
+  prompts-providencia.js     13 prompts de proyectos de providencia
+  prompts-despacho.js        13 prompts de gestion del despacho
   rondas.js                  rondas del ejercicio
   assets/                    tipografias .woff2 y logo
   build.py                   ensambla y convierte a ASCII
@@ -50,11 +49,9 @@ Edita los `.js` o la plantilla con tildes normales y corre:
 python3 src/build.py
 ```
 
-Cada prompt es un objeto `{a, g, t, r, c, i, mal, por, tip}`: frente, cargo,
+Cada prompt es un objeto `{a, t, r, c, i, mal, por, tip}`: frente,
 título, rol, contexto, instrucción, prompt "antes", por qué falla y tip. Los
-marcadores editables se escriben entre corchetes: `[fecha]`. Los cargos
-válidos para `g` son `magistrado`, `auxiliar`, `oficialmayor`, `oficial`,
-`relator` y `coordinador`.
+marcadores editables se escriben entre corchetes: `[fecha]`.
 
 ## Manejo de información
 

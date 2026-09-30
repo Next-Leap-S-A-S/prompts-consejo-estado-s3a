@@ -97,12 +97,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
 .btn.sq{padding:7px 8px}
 
 /* Hero */
-/* Hero glass: fondo degradado sobrio bajo un velo blanco translucido. */
+/* Hero glass: fotografia (Palacio de Justicia) desenfocada bajo un velo blanco translucido. */
 .hero{position:relative;padding:104px 0 56px;overflow:hidden;text-align:center;isolation:isolate}
 @media(min-width:768px){.hero{padding:128px 0 70px}}
 .hero-bg{position:absolute;inset:-24px;z-index:0;pointer-events:none;
-  background:radial-gradient(120% 90% at 18% 10%,#d9d4ea 0%,rgba(217,212,234,0) 60%),
-             radial-gradient(100% 80% at 88% 30%,#cfd9e6 0%,rgba(207,217,230,0) 62%),#e9e7f0}
+  background:url("{{HERO_IMG}}") center 42%/cover no-repeat;
+  filter:blur(5px) saturate(1.05);transform:scale(1.04)}
 .hero-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.08) 32%,
                           rgba(255,255,255,.55) 76%,rgba(255,255,255,.94) 93%,var(--bg) 100%)}
@@ -188,7 +188,6 @@ h1 .b{display:block;margin-top:13px;color:var(--ink55)}
 .chead{padding:14px 16px 12px;display:flex;flex-direction:column;gap:8px}
 .crow{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .crow .left{display:flex;align-items:center;gap:9px;min-width:0}
-.cargo{font-size:11px;color:var(--ink60);border:1px solid var(--line);border-radius:4px;padding:1px 6px;margin-left:8px;letter-spacing:.02em}
 .carea{font-size:11px;color:var(--ink45);text-transform:uppercase;letter-spacing:.1em;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ctools{display:flex;align-items:center;gap:3px;flex:none}
@@ -367,7 +366,7 @@ footer{margin-top:58px;border-top:1px solid var(--line);padding:28px 0 56px;disp
       <span class="a">Un prompt no es una consulta.</span>
       <span class="b">Es un encargo con responsable.</span>
     </h1>
-    <p class="sub">Treinta y seis prompts para el trabajo diario del despacho, nueve por cada frente: estudio del expediente, jurisprudencia y precedente, proyectos de providencia, y gestión del despacho. Hay prompts para magistrados, magistrados auxiliares, oficiales mayores, oficiales, relatores y coordinadores, todos con la misma estructura de tres partes. Los campos entre corchetes son editables en la propia página; al copiar se copia el texto ya editado.</p>
+    <p class="sub">Cincuenta y dos prompts para el trabajo diario del despacho, trece por cada frente: estudio del expediente, jurisprudencia y precedente, proyectos de providencia, y gestión del despacho. Cada uno es una tarea concreta, escrita con la misma estructura de tres partes. Los campos entre corchetes son editables en la propia página; al copiar se copia el texto ya editado.</p>
   </div></div>
 </header>
 
@@ -404,13 +403,12 @@ footer{margin-top:58px;border-top:1px solid var(--line);padding:28px 0 56px;disp
     <div class="searchrow">
       <div class="search">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Buscar por tarea, área o palabra clave" aria-label="Buscar prompts">
+        <input id="q" type="search" placeholder="Buscar por tarea o palabra clave" aria-label="Buscar prompts">
         <span class="k">/</span>
       </div>
       <span class="count" id="count"></span>
     </div>
     <div class="chips" id="chips" role="group" aria-label="Filtrar por frente"></div>
-    <div class="chips" id="cargos" role="group" aria-label="Filtrar por cargo"></div>
   </div>
 </div>
 
@@ -537,7 +535,7 @@ footer{margin-top:58px;border-top:1px solid var(--line);padding:28px 0 56px;disp
       <span class="hdiv"></span>
       <span class="client footclient"><span class="client-name">Sección Tercera</span><span class="client-sub">Subsección A</span></span>
     </div>
-    <p class="note"><strong>Next Leap</strong> · <strong>Consejo de Estado</strong><br>Rol · Contexto · Instrucción<br><span class="code">36 prompts / 4 frentes / 6 cargos</span></p>
+    <p class="note"><strong>Next Leap</strong> · <strong>Consejo de Estado</strong><br>Rol · Contexto · Instrucción<br><span class="code">52 prompts / 4 frentes</span></p>
   </div>
 </footer>
 
@@ -547,9 +545,7 @@ footer{margin-top:58px;border-top:1px solid var(--line);padding:28px 0 56px;disp
 <script>
 const AREAS=[["expediente","Estudio del expediente"],["jurisprudencia","Jurisprudencia y precedente"],
 ["providencia","Proyectos de providencia"],["despacho","Gestión del despacho"]];
-const CARGOS=[["magistrado","Magistrado"],["auxiliar","Magistrado auxiliar"],["oficialmayor","Oficial mayor"],
-["oficial","Oficial"],["relator","Relator"],["coordinador","Coordinador"]];
-const CARGO_NAME=Object.fromEntries(CARGOS);
+
 
 const PROMPTS=[
 {{PROMPTS}}
@@ -587,7 +583,7 @@ async function copiar(texto,btn){
 const armar=i=>`ROL\n${STATE[i].rol}\n\nCONTEXTO\n${STATE[i].ctx}\n\nINSTRUCCIÓN\n${STATE[i].ins}`;
 
 /* ══ BIBLIOTECA ══ */
-let filtro="todas", cargoF="todos", query="";
+let filtro="todas", query="";
 const favs=new Set();
 try{JSON.parse(localStorage.getItem("rci-ce-s3a-favs")||"[]").forEach(i=>favs.add(i))}catch(e){}
 const saveFavs=()=>{try{localStorage.setItem("rci-ce-s3a-favs",JSON.stringify([...favs]))}catch(e){}};
@@ -603,7 +599,7 @@ function tarjeta(p,i,d){
   c.innerHTML=`
   <div class="chead">
     <div class="crow">
-      <div class="left"><span class="code">${CODES[i]}</span><span class="carea">${AREA_NAME[p.a]}</span><span class="cargo">${CARGO_NAME[p.g]}</span></div>
+      <div class="left"><span class="code">${CODES[i]}</span><span class="carea">${AREA_NAME[p.a]}</span></div>
       <div class="ctools">
         <button class="ico ${favs.has(i)?"on":""}" data-act="fav" aria-label="Favorito" title="Favorito">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="${favs.has(i)?"currentColor":"none"}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>
@@ -632,9 +628,8 @@ function render(){
   const q=query.trim().toLowerCase(); let n=0;
   PROMPTS.forEach((p,i)=>{
     const okA=filtro==="todas"||(filtro==="favs"?favs.has(i):p.a===filtro);
-    const okG=cargoF==="todos"||p.g===cargoF;
-    const txt=(p.t+" "+AREA_NAME[p.a]+" "+CARGO_NAME[p.g]+" "+STATE[i].rol+" "+STATE[i].ctx+" "+STATE[i].ins+" "+p.mal).toLowerCase();
-    if(okA&&okG&&(!q||txt.includes(q))){g.appendChild(tarjeta(p,i,Math.min(n,12)*20));n++}
+    const txt=(p.t+" "+AREA_NAME[p.a]+" "+STATE[i].rol+" "+STATE[i].ctx+" "+STATE[i].ins+" "+p.mal).toLowerCase();
+    if(okA&&(!q||txt.includes(q))){g.appendChild(tarjeta(p,i,Math.min(n,12)*20));n++}
   });
   el("#empty").hidden=n>0;
   el("#count").textContent=n===PROMPTS.length?`${PROMPTS.length} prompts`:`${n} / ${PROMPTS.length}`;
@@ -655,20 +650,6 @@ function chips(){
     const b=e.target.closest(".chip"); if(!b) return;
     filtro=b.dataset.k;
     c.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.k===filtro)));
-    render();
-  });
-}
-function chipsCargo(){
-  const c=el("#cargos");
-  [["todos","Todos los cargos"],...CARGOS].forEach(([k,label])=>{
-    const b=document.createElement("button");
-    b.className="chip"; b.type="button"; b.dataset.k=k; b.textContent=label;
-    b.setAttribute("aria-pressed",String(k===cargoF)); c.appendChild(b);
-  });
-  c.addEventListener("click",e=>{
-    const b=e.target.closest(".chip"); if(!b) return;
-    cargoF=b.dataset.k;
-    c.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.k===cargoF)));
     render();
   });
 }
@@ -702,7 +683,7 @@ function abrir(idx){
   const p=PROMPTS[idx];
   el("#sheet").innerHTML=`
   <div class="shead">
-    <div><span class="code">${CODES[idx]} · ${AREA_NAME[p.a]} · ${CARGO_NAME[p.g]}</span><h3>${esc(p.t)}</h3></div>
+    <div><span class="code">${CODES[idx]} · ${AREA_NAME[p.a]}</span><h3>${esc(p.t)}</h3></div>
     <button class="btn sq" data-close aria-label="Cerrar">✕</button>
   </div>
   <div class="antes"><span class="code">/antes</span><p class="q">"${esc(p.mal)}"</p><p class="why"><b>Falla porque:</b> ${esc(p.por)}</p></div>
@@ -882,7 +863,7 @@ document.addEventListener("keydown",e=>{
   }
   if(e.key==="Escape"&&el("#dlg").open) el("#dlg").close();
 });
-chips(); chipsCargo(); render(); evaluar(); pintarT();
+chips(); render(); evaluar(); pintarT();
 el("#q").addEventListener("input",e=>{query=e.target.value;render()});
 </script>
 
